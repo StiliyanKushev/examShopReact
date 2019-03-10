@@ -4,20 +4,21 @@ const Schema = mongoose.Schema;
 const productSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: [true, "No title given"]
   },
   description: {
     type: String,
-    required: true
+    required: [true, "No description given"]
   },
   imageUrl: {
     type: String,
-    required: true,
-    validate: /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/g
+    required: [true, "No imageUrl given"],
+    validate: /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/,
+    unique:false
   },
   price: {
     type: Number,
-    required: true
+    required: [true, "No price given"]
   },
   date:{
     type: Date,
@@ -26,7 +27,6 @@ const productSchema = new Schema({
   creator:{
     type:String,
     required: true,
-    unique: true,
   }
 });
 

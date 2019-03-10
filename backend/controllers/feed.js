@@ -1,7 +1,7 @@
 const Product = require('../models/Product');
 
 module.exports = {
-  getProducts: (req, res) => {
+  getProducts: (req, res,next) => {
     Product.find()
       .then((products) => {
         res
@@ -15,7 +15,7 @@ module.exports = {
         next(error);
       });
   },
-  createProduct: (req, res) => {
+  createProduct: (req, res,next) => {
     const productObj = req.body;
     Product.create(productObj)
     .then((product) => {
@@ -26,6 +26,8 @@ module.exports = {
         })
     })
     .catch((error) => {
+      error.message = error.message.replace(/[a-zA-Z]+ validation failed: [a-zA-Z]+: /,"");
+      error.message = error.message.substring(0,error.message.indexOf(","));
       if (!error.statusCode) {
         error.statusCode = 500;
       }
