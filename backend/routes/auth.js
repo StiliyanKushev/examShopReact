@@ -5,7 +5,6 @@ const User = require('../models/User');
 
 router.post('/register',
   [
-    // TODO: Add normalize email and check
     body('password')
       .trim()
       .isLength({ min: 5 })
