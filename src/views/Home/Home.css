@@ -1,0 +1,12 @@
+main .indexImageDiv,
+main .imageBlur > img{
+  filter: saturate(20%);
+  width: 100%;
+  height: calc(100vh - 3.6rem);
+}
+main .imageBlur {
+  z-index: 2;
+  background: inherit;
+  height: 100%;
+  filter: blur(2px);
+}
