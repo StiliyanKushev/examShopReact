@@ -1,49 +1,38 @@
-const mongoose = require('mongoose');
-const encryption = require('../util/encryption');
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const encryption = require('../utilities/encryption')
 
-const userSchema = new Schema({
-  hashedPassword: {
-    type: Schema.Types.String,
-    required: true
-  },
-  username: {
-    type: Schema.Types.String,
-    required: true,
-    unique:true,
-  },
-  salt: {
-    type: Schema.Types.String,
-    required: true
-  },
-  roles: [{type: Schema.Types.String, required: true}]
-});
+const REQUIRED_VALIDATION_MESSAGE = '{PATH} is required'
+
+let userSchema = new mongoose.Schema({
+  email: {type: String, required: REQUIRED_VALIDATION_MESSAGE, unique: true},
+  username: {type: String, required: REQUIRED_VALIDATION_MESSAGE, unique: false},
+  salt: String,
+  password: String,
+  roles: [String]
+})
 
 userSchema.method({
   authenticate: function (password) {
-    const currentHashedPass = encryption.generateHashedPassword(this.salt, password);
-
-    return currentHashedPass === this.hashedPassword;
+    return encryption.generateHashedPassword(this.salt, password) === this.password
   }
-});
+})
 
-const User = mongoose.model('User', userSchema);
+let User = mongoose.model('User', userSchema)
 
-User.seedAdminUser = async () => {
-  try {
-    let users = await User.find();
-    if (users.length > 0) return;
-    const salt = encryption.generateSalt();
-    const hashedPassword = encryption.generateHashedPassword(salt, 'Admin');
-    return User.create({
+module.exports = User
+module.exports.seedAdminUser = () => {
+  User.find({}).then(users => {
+    if (users.length > 0) return
+
+    let salt = encryption.generateSalt()
+    let password = encryption.generateHashedPassword(salt, '12345678')
+
+    User.create({
+      email: 'admin@admin.com',
       username: 'Admin',
-      salt,
-      hashedPassword,
+      salt: salt,
+      password: password,
       roles: ['Admin']
-    });
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-module.exports = User;
+    })
+  })
+}
