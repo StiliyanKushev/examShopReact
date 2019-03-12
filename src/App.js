@@ -19,6 +19,10 @@ class App extends Component {
       redirectPath: null,
 
       username: sessionStorage.getItem("username") || null,
+<<<<<<< HEAD
+=======
+      userId: sessionStorage.getItem("userId") || null,
+>>>>>>> master
       userToken: sessionStorage.getItem("userToken") || null,
       isAdmin: sessionStorage.getItem("isAdmin") || null,
     }
@@ -33,6 +37,7 @@ class App extends Component {
   }
 
   saveUserInSession(resBody) {
+<<<<<<< HEAD
     sessionStorage.setItem("username", resBody.username);
     sessionStorage.setItem("userToken", resBody.token);
     sessionStorage.setItem("isAdmin", resBody.isAdmin);
@@ -46,6 +51,23 @@ class App extends Component {
 
   isAuth() {
     return this.state.userToken === null ? false : true;
+=======
+    // sessionStorage.setItem("username", resBody.username);
+    // sessionStorage.setItem("userToken", resBody.token);
+    // sessionStorage.setItem("userId", resBody.userId);
+    // sessionStorage.setItem("isAdmin", resBody.isAdmin);
+  }
+
+  removeUserFromSession() {
+    // sessionStorage.removeItem("username");
+    // sessionStorage.removeItem("userToken");
+    // sessionStorage.removeItem("userId");
+    // sessionStorage.removeItem("isAdmin");
+  }
+
+  isAuth() {
+    return this.state.userId === null ? false : true;
+>>>>>>> master
   }
 
   //functions for handling forms 
