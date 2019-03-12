@@ -10,6 +10,8 @@ import AppHeader from "./components/Header/Header";
 import AppFooter from './components/Footer/Footer';
 import AppContent from "./components/Content/Content";
 
+import LoadingView from "./views/LoadingView/LoadingView";
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -19,10 +21,6 @@ class App extends Component {
       redirectPath: null,
 
       username: sessionStorage.getItem("username") || null,
-<<<<<<< HEAD
-=======
-      userId: sessionStorage.getItem("userId") || null,
->>>>>>> master
       userToken: sessionStorage.getItem("userToken") || null,
       isAdmin: sessionStorage.getItem("isAdmin") || null,
     }
@@ -37,10 +35,9 @@ class App extends Component {
   }
 
   saveUserInSession(resBody) {
-<<<<<<< HEAD
-    sessionStorage.setItem("username", resBody.username);
+    sessionStorage.setItem("username", resBody.user.username);
     sessionStorage.setItem("userToken", resBody.token);
-    sessionStorage.setItem("isAdmin", resBody.isAdmin);
+    sessionStorage.setItem("isAdmin", resBody.user.roles.indexOf("Admin") !== -1);
   }
 
   removeUserFromSession() {
@@ -51,23 +48,6 @@ class App extends Component {
 
   isAuth() {
     return this.state.userToken === null ? false : true;
-=======
-    // sessionStorage.setItem("username", resBody.username);
-    // sessionStorage.setItem("userToken", resBody.token);
-    // sessionStorage.setItem("userId", resBody.userId);
-    // sessionStorage.setItem("isAdmin", resBody.isAdmin);
-  }
-
-  removeUserFromSession() {
-    // sessionStorage.removeItem("username");
-    // sessionStorage.removeItem("userToken");
-    // sessionStorage.removeItem("userId");
-    // sessionStorage.removeItem("isAdmin");
-  }
-
-  isAuth() {
-    return this.state.userId === null ? false : true;
->>>>>>> master
   }
 
   //functions for handling forms 
@@ -79,7 +59,7 @@ class App extends Component {
 
   //NOTE: only for register and login
   handleSubmit(e, data, isLogin) {
-    console.log(data);
+     
     e.preventDefault();
     const url = "http://localhost:9999/auth/" + (isLogin ? "login" : "register");
     fetch(url, {
@@ -88,14 +68,14 @@ class App extends Component {
       headers: { "Content-Type": "application/json" }
     }).then(rawData => rawData.json())
       .then(resBody => {
-        console.log(resBody);
+         
         if (resBody.success === true) {
           this.saveUserInSession(resBody);
 
           this.handleRedirect("/", {
             username: resBody.user.username,
             userToken: resBody.token,
-            isAdmin: resBody.user.roles.indexOf("Admin") != -1
+            isAdmin: resBody.user.roles.indexOf("Admin") !== -1
           });
 
           toast.success(`Wellcome ${resBody.message}`, {
@@ -121,7 +101,7 @@ class App extends Component {
                 autoClose: true
               });
           }
-          else if(resBody.message){
+          else if (resBody.message) {
             if (resBody.message)
               toast.error(`${resBody.message}`, {
                 closeButton: false,
@@ -172,15 +152,43 @@ class App extends Component {
       headers: { "Content-Type": "application/json" }
     }).then(rawData => rawData.json())
       .catch(error => {
-        console.log(error);
+        toast.error(`${error}`, {
+          closeButton: false,
+          autoClose: true
+        });
       })
       .then(resBody => {
-        this.handleRedirect("/");
-        if (resBody.message) {
-          toast.error(`${resBody.message}`, {
+         
+        if (resBody.success === true) {
+          this.handleRedirect("/");
+          toast.success(`${resBody.message}`, {
             closeButton: false,
             autoClose: true
           });
+        }
+        else {
+          if (resBody.errors) {
+            if (resBody.errors.title)
+              toast.error(`${resBody.errors.title}`, {
+                closeButton: false,
+                autoClose: true
+              });
+            if (resBody.errors.description)
+              toast.error(`${resBody.errors.description}`, {
+                closeButton: false,
+                autoClose: true
+              });
+            if (resBody.errors.imageUrl)
+              toast.error(`${resBody.errors.imageUrl}`, {
+                closeButton: false,
+                autoClose: true
+              });
+            if (resBody.errors.price)
+              toast.error(`${resBody.errors.price}`, {
+                closeButton: false,
+                autoClose: true
+              });
+          }
         }
       });
   }
@@ -191,7 +199,7 @@ class App extends Component {
     }
     return (
       <div className="App">
-        <Suspense fallback={<span>Loading...</span>}>
+        <Suspense fallback={<LoadingView />}>
           <ToastContainer autoClose={2300} />
           <AppHeader username={this.state.username} handleLogout={this.handleLogout} handleRedirect={this.handleRedirect} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
           <AppContent isAuth={this.isAuth} handleSell={this.handleSell} handleChange={this.handleChange} handleSubmit={this.handleSubmit} handleRedirect={this.handleRedirect} />
