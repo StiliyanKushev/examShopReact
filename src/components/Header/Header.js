@@ -1,6 +1,8 @@
+//import all React things and external Compoenets
 import React from "react";
 import { Link } from "react-router-dom";
 
+//import the styles
 import "./Header.css";
 
 const AppHeader = function (props) {
@@ -11,7 +13,8 @@ const AppHeader = function (props) {
             </div>
             <nav>
                 {
-                    !props.username ? 
+                    // if the user is logged in (has a username in the global/app state)
+                    !props.global.state.username ? 
                     (
                     <ul>
                         <li>
@@ -44,11 +47,13 @@ const AppHeader = function (props) {
                             </Link>
                         </li>
                         <li id="welcomeLink">
-                            <Link to="#">Welcome {props.username}</Link>
+                            <Link to="#">Welcome {props.global.state.username}</Link>
                         </li>
                         <li>
-                            {// eslint-disable-next-line
-                            <a onClick={() => {props.handleLogout()}}>
+                            {
+                            //this is a silmple List Item that has an OnClick to logout
+                            // eslint-disable-next-line
+                            <a onClick={() => {props.global.handleLogout()}}>
                                 Logout
                             </a>}
                         </li>

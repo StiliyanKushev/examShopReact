@@ -15,7 +15,7 @@ class LoginView extends Component {
     render(){
         return (
             <div className="form">
-                <form onSubmit={(e) => this.props.handleSubmit(e,this.state,true)}>
+                <form onSubmit={(e) => this.props.handleSubmit(e,this.state,"/login",this.props.handleLoginRegister)}>
                     <div className="container">
                         <label htmlFor="email">
                             Email

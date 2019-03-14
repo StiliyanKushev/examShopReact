@@ -16,7 +16,7 @@ class RegisterView extends Component {
     render(){
         return (
         <div className="form register">
-            <form onSubmit={(e) => this.props.handleSubmit(e,this.state)}>
+            <form onSubmit={(e) => this.props.handleSubmit(e,this.state,"/register",this.props.handleLoginRegister)}>
                 <div className="container">
                     <label htmlFor="username">
                         Username

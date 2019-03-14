@@ -1,15 +1,18 @@
+//import all React things and external components
 import React, { Suspense, Component } from 'react';
-import "./App.css";
-
+import Redirect from 'react-router-dom/Redirect';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import Redirect from 'react-router-dom/Redirect';
+//import the styles
+import "./App.css";
 
+//import all components that will render
 import AppHeader from "./components/Header/Header";
 import AppFooter from './components/Footer/Footer';
 import AppContent from "./components/Content/Content";
 
+//import the loading Component in the Suspense
 import LoadingView from "./views/LoadingView/LoadingView";
 
 class App extends Component {
@@ -17,7 +20,6 @@ class App extends Component {
     super(props);
 
     this.state = {
-      redirect: null,
       redirectPath: null,
 
       username: sessionStorage.getItem("username") || null,
@@ -25,27 +27,103 @@ class App extends Component {
       isAdmin: sessionStorage.getItem("isAdmin") || null,
     }
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleRedirect = this.handleRedirect.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
-    this.saveUserInSession = this.saveUserInSession.bind(this);
-    this.removeUserFromSession = this.removeUserFromSession.bind(this);
-    this.handleSell = this.handleSell.bind(this);
+    //bind all functions
     this.isAuth = this.isAuth.bind(this);
+    this.handleSell = this.handleSell.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.handleRedirect = this.handleRedirect.bind(this);
+    this.saveUserInSession = this.saveUserInSession.bind(this);
+    this.handleLoginRegister = this.handleLoginRegister.bind(this);
+    this.removeUserFromSession = this.removeUserFromSession.bind(this);
+    this.manageDatabaseResponse = this.manageDatabaseResponse.bind(this);
   }
 
+  //function that handles the responses of other functions 
+  manageDatabaseResponse(resBody, onSuccess) {
+    if (resBody.success === true) {
+      onSuccess();
+      toast.success(`${resBody.message}`, {
+        closeButton: false,
+        autoClose: true
+      });
+    }
+    else {
+      if (resBody.errors) {
+        for (let err in resBody.errors) {
+          toast.error(`${resBody.errors[err]}`, {
+            closeButton: false,
+            autoClose: true
+          });
+        }
+      }
+      else if (resBody.message) {
+        toast.error(`${resBody.message}`, {
+          closeButton: false,
+          autoClose: true
+        });
+      }
+    }
+  }
+
+  //function that handles the redirect and at the same time sets the state 
+  //to make the final component rendering faster
+  handleRedirect(path, newState, callback) {
+    if (newState) {
+      this.setState({
+        ...{
+          redirectPath: path,
+        }, ...newState
+      }, callback);
+    }
+
+    else {
+      this.setState({
+        redirectPath: path,
+      }, callback);
+    }
+    return null;
+  }
+
+  //functions for managing the user data
   saveUserInSession(resBody) {
     sessionStorage.setItem("username", resBody.user.username);
     sessionStorage.setItem("userToken", resBody.token);
     sessionStorage.setItem("isAdmin", resBody.user.roles.indexOf("Admin") !== -1);
   }
-
   removeUserFromSession() {
     sessionStorage.removeItem("username");
     sessionStorage.removeItem("userToken");
     sessionStorage.removeItem("isAdmin");
   }
-
+  handleLoginRegister(url, data) {
+    fetch(url, {
+      method: "post",
+      body: JSON.stringify(data),
+      headers: { "Content-Type": "application/json" }
+    }).then(rawData => rawData.json())
+      .then(resBody => {
+        this.manageDatabaseResponse(resBody,
+          // if the response is succsessful
+          () => {
+            this.saveUserInSession(resBody);
+            this.handleRedirect("/", {
+              username: resBody.user.username,
+              userToken: resBody.token,
+              isAdmin: resBody.user.roles.indexOf("Admin") !== -1
+            });
+          });
+      });
+  }
+  handleLogout() {
+    this.removeUserFromSession();
+    this.handleRedirect("/", {
+      username: null,
+      userId: null,
+      userToken: null,
+      isAdmin: null,
+    });
+  }
   isAuth() {
     return this.state.userToken === null ? false : true;
   }
@@ -56,153 +134,38 @@ class App extends Component {
       [e.target.name]: e.target.value
     });
   }
-
-  //NOTE: only for register and login
-  handleSubmit(e, data, isLogin) {
-     
+  handleSubmit(e, data, path, func) {
     e.preventDefault();
-    const url = "http://localhost:9999/auth/" + (isLogin ? "login" : "register");
+    const url = "http://localhost:9999/auth" + path;
+    func(url, data);
+  }
+
+  //function for handling the products (sell and store)
+  handleSell(url, data) {
     fetch(url, {
       method: "post",
       body: JSON.stringify(data),
       headers: { "Content-Type": "application/json" }
     }).then(rawData => rawData.json())
       .then(resBody => {
-         
-        if (resBody.success === true) {
-          this.saveUserInSession(resBody);
-
-          this.handleRedirect("/", {
-            username: resBody.user.username,
-            userToken: resBody.token,
-            isAdmin: resBody.user.roles.indexOf("Admin") !== -1
+        this.manageDatabaseResponse(resBody,
+          // if the response is succsessful
+          () => {
+            this.handleRedirect("/");
           });
-
-          toast.success(`Wellcome ${resBody.message}`, {
-            closeButton: false,
-            autoClose: true
-          });
-        }
-        else {
-          if (resBody.errors) {
-            if (resBody.errors.username)
-              toast.error(`${resBody.errors.username}`, {
-                closeButton: false,
-                autoClose: true
-              });
-            if (resBody.errors.email)
-              toast.error(`${resBody.errors.email}`, {
-                closeButton: false,
-                autoClose: true
-              });
-            if (resBody.errors.password)
-              toast.error(`${resBody.errors.password}`, {
-                closeButton: false,
-                autoClose: true
-              });
-          }
-          else if (resBody.message) {
-            if (resBody.message)
-              toast.error(`${resBody.message}`, {
-                closeButton: false,
-                autoClose: true
-              });
-          }
-        }
-      });
-  }
-
-  handleRedirect(path, newState, callback) {
-    if (newState) {
-      this.setState({
-        ...{
-          redirect: true,
-          redirectPath: path,
-        }, ...newState
-      }, callback);
-    }
-
-    else {
-      this.setState({
-        redirect: true,
-        redirectPath: path,
-      }, callback);
-    }
-
-    return null;
-  }
-
-  handleLogout() {
-    this.removeUserFromSession();
-    this.handleRedirect("/", {
-      username: null,
-      userId: null,
-      userToken: null,
-      isAdmin: null,
-    });
-  }
-
-  handleSell(e, data) {
-    data.creator = sessionStorage.getItem("username");
-    e.preventDefault();
-    const url = "http://localhost:9999/feed/product/create";
-    fetch(url, {
-      method: "post",
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "application/json" }
-    }).then(rawData => rawData.json())
-      .catch(error => {
-        toast.error(`${error}`, {
-          closeButton: false,
-          autoClose: true
-        });
-      })
-      .then(resBody => {
-         
-        if (resBody.success === true) {
-          this.handleRedirect("/");
-          toast.success(`${resBody.message}`, {
-            closeButton: false,
-            autoClose: true
-          });
-        }
-        else {
-          if (resBody.errors) {
-            if (resBody.errors.title)
-              toast.error(`${resBody.errors.title}`, {
-                closeButton: false,
-                autoClose: true
-              });
-            if (resBody.errors.description)
-              toast.error(`${resBody.errors.description}`, {
-                closeButton: false,
-                autoClose: true
-              });
-            if (resBody.errors.imageUrl)
-              toast.error(`${resBody.errors.imageUrl}`, {
-                closeButton: false,
-                autoClose: true
-              });
-            if (resBody.errors.price)
-              toast.error(`${resBody.errors.price}`, {
-                closeButton: false,
-                autoClose: true
-              });
-          }
-        }
       });
   }
 
   render() {
-    if (this.state.redirect) {
+    if (this.state.redirectPath) {
       return <Redirect to={this.state.redirectPath} />
     }
     return (
       <div className="App">
         <Suspense fallback={<LoadingView />}>
           <ToastContainer autoClose={2300} />
-          <AppHeader username={this.state.username} handleLogout={this.handleLogout} handleRedirect={this.handleRedirect} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
-          <AppContent isAuth={this.isAuth} handleSell={this.handleSell} handleChange={this.handleChange} handleSubmit={this.handleSubmit} handleRedirect={this.handleRedirect} />
+          <AppHeader global={this} />
+          <AppContent global={this} />
           <AppFooter />
         </Suspense>
       </div>
@@ -210,11 +173,10 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    if (this.state.redirect) {
-      this.setState({
-        redirect: null,
-        redirectPath: null,
-      })
+    //just reset the redirect functionality without rerendering the component
+    if (this.state.redirectPath) {
+      // eslint-disable-next-line
+      this.state.redirectPath = null;
     }
   }
 }
