@@ -1,11 +1,11 @@
 import React from "react";
 
-const CustomRoute = function({component:Component,handleRedirect,verification,redirectPath,...rest}){
+const CustomRoute = function({component:Component,redirect,verification,redirectPath,...rest}){
     if(verification){
-        return <Component {...rest}/>;
+        return <Component {...rest} redirect={redirect}/>;
     }
     else{
-        return handleRedirect(redirectPath);
+        return redirect(redirectPath);
     }
 }
 

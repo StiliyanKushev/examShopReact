@@ -3,6 +3,7 @@ import React, { lazy } from "react";
 // eslint-disable-next-line
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import CustomRoute from "../CustomRoute/CustomRoute";
+import { withGlobalState } from 'react-globally';
 
 //import the basic css for the the main tag
 import "./Content.css";
@@ -17,39 +18,31 @@ const AppContent = function (props) {
     return (
         <main>
             <Switch>
-                <Route path="/" render={() => <HomeView />} exact />
+                <Route path="/" render={() => <HomeView/>} exact />
                 <CustomRoute
                     path="/login"
                     redirectPath="/"
-                    verification={!props.global.isAuth()}
+                    redirect={props.redirect}
+                    verification={!props.globalState.userToken}
                     component={LoginView}
-                    handleSubmit={props.global.handleSubmit}
-                    handleLoginRegister={props.global.handleLoginRegister}
-                    handleChange={props.global.handleChange}
-                    handleRedirect={props.global.handleRedirect}
                     exact />
                 <CustomRoute
                     path="/register"
                     redirectPath="/"
-                    verification={!props.global.isAuth()}
+                    redirect={props.redirect}
+                    verification={!props.globalState.userToken}
                     component={RegisterView}
-                    handleSubmit={props.global.handleSubmit}
-                    handleLoginRegister={props.global.handleLoginRegister}
-                    handleChange={props.global.handleChange}
-                    handleRedirect={props.global.handleRedirect}
                     exact />
                 <CustomRoute
                     path="/sell"
-                    component={SellView}
                     redirectPath="/login"
-                    verification={props.global.isAuth()}
-                    handleSell={props.global.handleSell}
-                    handleChange={props.global.handleChange}
-                    handleRedirect={props.global.handleRedirect}
+                    redirect={props.redirect}
+                    verification={props.globalState.userToken}
+                    component={SellView}
                     exact />
             </Switch>
         </main>
     );
 }
 
-export default AppContent;
+export default withGlobalState(AppContent);

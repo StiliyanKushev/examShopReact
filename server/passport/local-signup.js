@@ -1,4 +1,5 @@
 const PassportLocalStrategy = require('passport-local').Strategy
+const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 const encryption = require('../utilities/encryption')
 
@@ -31,7 +32,19 @@ module.exports = new PassportLocalStrategy({
       User
         .create(user)
         .then(() => {
-          return done(null)
+          const payload = {
+            sub: user.id
+          }
+          const token = jwt.sign(payload, 's0m3 r4nd0m str1ng')
+          const data = {
+            username: user.username
+          }
+    
+          if (user.roles) {
+            data.roles = user.roles
+          }
+    
+          return done(null, token, data)
         })
         .catch((error) => {
           return done(null);
