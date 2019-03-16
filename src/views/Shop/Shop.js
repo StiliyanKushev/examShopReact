@@ -30,7 +30,7 @@ class ShopView extends Component {
                     {
                         this.state.products.map(product =>
                             <li key={product._id}>
-                                <Product source={product} dynamic={this.state.dynamic} redirect={this.props.redirect} />
+                                <Product isMine={product.creator === this.props.globalState.username} source={product} dynamic={this.state.dynamic} redirect={this.props.redirect} />
                             </li>
                         )
                     }

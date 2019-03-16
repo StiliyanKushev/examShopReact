@@ -4,11 +4,11 @@ function change(e) {
         [e.target.name]: e.target.value
     });
 }
-function submit(e, data, path, func, redirect) {
+function submit(e, data, path, func, redirect,globalState) {
     console.log(arguments);
     e.preventDefault();
     const url = "http://localhost:9999" + path;
-    func(url, data,redirect);
+    func(url, data,redirect,globalState);
 }
 
 export {

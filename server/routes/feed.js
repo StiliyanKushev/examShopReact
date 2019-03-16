@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const authCheck = require("../config/auth-check");
 const validator = require('validator');
 const Product = require('../models/Product');
 const User = require('../models/User');
@@ -77,8 +78,6 @@ async function createProduct(req, res, next) {
     })
   }
 
-  console.log(req.body);
-
   await new Product({
     //pass the req.values to the scheme
     title: req.body.title,
@@ -135,9 +134,29 @@ async function buyProduct(req, res, next) {
   }
 }
 
+async function removeProduct(req, res, next) {
+  const productId = req.params.id;
+  const product = await Product.findById(productId);
+  if (!product) {
+    return res.status(200).json({
+      success: false,
+      message: "The product you are trying to delete doesn't exist",
+    })
+  }
+  else {
+    product.remove();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product is successfuly deleted",
+    })
+  }
+}
+
 router.get('/products', getProducts);
 router.get('/products/latest', getLatestProducts);
-router.post('/product/create', createProduct);
-router.post('/product/buy/:id', buyProduct);
+router.post('/product/create', authCheck, createProduct);
+router.post('/product/buy/:id', authCheck, buyProduct);
+router.post('/product/remove/:id', authCheck, removeProduct);
 
 module.exports = router;

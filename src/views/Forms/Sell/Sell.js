@@ -23,7 +23,7 @@ class SellView extends Component {
     render() {
         return (
             <div className="form sell">
-                <form onSubmit={(e) => submit(e, this.state, "/feed/product/create", sell, this.props.redirect)}>
+                <form onSubmit={(e) => submit(e, this.state, "/feed/product/create", sell, this.props.redirect,this.props.globalState)}>
                     <div className="container">
                         <label htmlFor="title">
                             Title
