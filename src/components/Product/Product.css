@@ -20,6 +20,7 @@
   text-align: center;
   font-weight: bold;
   font-size: 1.3em;
+  width: 33.3%;
 }
 
 .productContainer .image {
@@ -74,4 +75,11 @@
 
 .buttons #delete {
   background: rgb(163, 0, 0);
+}
+
+.creator{
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.3em;
+  color: rgb(128, 128, 128);
 }

@@ -7,7 +7,7 @@ import {buy,remove,edit} from "../../handlers/productHandler";
 const Product = (props) => {
     return (
         <div className="productContainer">
-            <div className="title"><p>{props.source.title}</p><p className="price">{props.source.price}$</p></div>
+            <div className="title"><p>{props.source.title}</p><p className="creator">{props.source.creator}</p><p className="price">{props.source.price}$</p></div>
             <div className="image" style={{ background: `url(${props.source.imageUrl})` }}></div>
             <div className="description"><p>{props.source.description}</p></div>
             <div className="buttons">
