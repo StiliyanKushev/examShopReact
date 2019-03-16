@@ -1,7 +1,8 @@
 //import all React things and external components
 import React, { lazy } from "react";
+
 // eslint-disable-next-line
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route,Redirect, Switch } from "react-router-dom";
 import CustomRoute from "../CustomRoute/CustomRoute";
 import { withGlobalState } from 'react-globally';
 
@@ -56,11 +57,16 @@ const AppContent = function (props) {
                     redirect={props.redirect}
                     verification={props.globalState.userToken}
                     component={EditView}
+                    />
+                <Route
+                    path="/shop"
+                    render={() => <ShopView redirect={props.redirect} />}
                     exact />
                 <Route
                     path="/shop"
                     render={() => <ShopView redirect={props.redirect} />}
                     exact />
+                <Redirect to="/"/>
             </Switch>
         </main>
     );

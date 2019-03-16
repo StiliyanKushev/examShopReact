@@ -62,7 +62,7 @@ class InventoryView extends Component {
             return (
                 <React.Fragment>
                     <button onClick={() => this.goBack()} className="goBackBtn">go back</button>
-                    <ShopView dynamic={this.state.dynamic} products={this.state.products} />
+                    <ShopView redirect={this.props.redirect} dynamic={this.state.dynamic} products={this.state.products} />
                 </React.Fragment>
             )
         }
