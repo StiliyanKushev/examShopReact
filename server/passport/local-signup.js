@@ -19,10 +19,10 @@ module.exports = new PassportLocalStrategy({
   console.log(user);
 
   User
-    .find({email: email})
+    .find({$or:[{email: email},{username:req.body.username}]})
     .then(users => {
       if (users.length > 0) {
-        return done('E-mail already exists!')
+        return done('user with this e-mail or username already exists!')
       }
 
       user.salt = encryption.generateSalt()

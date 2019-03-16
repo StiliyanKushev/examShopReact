@@ -13,12 +13,13 @@ const HomeView = lazy(() => import("../../views/Home/Home"));
 const LoginView = lazy(() => import("../../views/Forms/Login/Login"));
 const RegisterView = lazy(() => import("../../views/Forms/Register/Register"));
 const SellView = lazy(() => import("../../views/Forms/Sell/Sell"));
+const ShopView = lazy(() => import("../../views/Shop/Shop"));
 
 const AppContent = function (props) {
     return (
         <main>
             <Switch>
-                <Route path="/" render={() => <HomeView/>} exact />
+                <Route path="/" render={() => <HomeView />} exact />
                 <CustomRoute
                     path="/login"
                     redirectPath="/"
@@ -39,6 +40,10 @@ const AppContent = function (props) {
                     redirect={props.redirect}
                     verification={props.globalState.userToken}
                     component={SellView}
+                    exact />
+                <Route
+                    path="/shop"
+                    render={() => <ShopView redirect={props.redirect} />}
                     exact />
             </Switch>
         </main>

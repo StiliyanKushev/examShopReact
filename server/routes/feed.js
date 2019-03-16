@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const validator = require('validator');
 const Product = require('../models/Product');
+const User = require('../models/User');
 
 function validateSellForm(payload) {
   const errors = {}
@@ -52,6 +53,20 @@ function getProducts(req, res, next) {
       next(error);
     });
 }
+function getLatestProducts(req, res, next) {
+  Product.find().sort('-date').limit(2)
+    .then((products) => {
+      res
+        .status(200)
+        .json({ message: 'Fetched products successfully.', products });
+    })
+    .catch((error) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
+}
 async function createProduct(req, res, next) {
   const validationResult = validateSellForm(req.body)
   if (!validationResult.success) {
@@ -70,7 +85,7 @@ async function createProduct(req, res, next) {
     imageUrl: req.body.imageUrl,
     description: req.body.description,
     price: req.body.price,
-    creator: req.body.creator
+    creator: req.body.creator,
   }).save();
 
   return res.status(200).json({
@@ -79,7 +94,50 @@ async function createProduct(req, res, next) {
   })
 }
 
+async function buyProduct(req, res, next) {
+  const productId = req.params.id;
+  const buyerUsername = req.body.username;
+  const product = await Product.findById(productId);
+  if (!product) {
+    return res.status(200).json({
+      success: false,
+      message: "The product you are trying to buy is already bought or doesn't exist",
+    })
+  }
+  else {
+    //check if the product is not the buyer's products
+    if (buyerUsername === product.creator) {
+      return res.status(200).json({
+        success: false,
+        message: "You can't buy your own product.",
+      })
+    }
+    //find the buyer's user model
+    const buyer = await User.findOne({ username: buyerUsername });
+    //find the seller's user model
+    const seller = await User.findOne({ username: product.creator });
+    //add the product to the buyer's inventory
+    const prodObj = { title: product.title, description: product.description, price: product.price, imageUrl: product.imageUrl };
+    await User.update(
+      { _id: buyer._id },
+      { $push: { inventory: prodObj } });
+    //add it to the other users sold items
+    await User.update(
+      { _id: seller._id },
+      { $push: { soldItems: prodObj } });
+    //remove from the shop
+    product.remove();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product is successfuly bought",
+    })
+  }
+}
+
 router.get('/products', getProducts);
+router.get('/products/latest', getLatestProducts);
 router.post('/product/create', createProduct);
+router.post('/product/buy/:id', buyProduct);
 
 module.exports = router;

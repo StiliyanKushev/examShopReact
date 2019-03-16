@@ -1,0 +1,30 @@
+.shopListDiv {
+  margin-left: 10rem;
+  margin-right: 10rem;
+  margin-top: 7rem;
+  margin-bottom: 7rem;
+}
+
+.shopList {
+  width: 100%;
+  margin: 0%;
+  padding: 0%;
+  display: grid;
+  grid-gap: 9rem 5rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-auto-rows: 28rem;
+  grid-auto-flow: row dense;
+}
+
+.shopList li {
+  list-style-type: none;
+  height: fit-content;
+  background: white;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+
+  background: #491bef;
+  padding: 0.1rem;
+  color: white;
+}

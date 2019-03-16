@@ -18,7 +18,7 @@ body #root .App > header {
   justify-content: space-between;
 
   color: white;
-  background: #353239;
+  background: #070709;
 }
 
 /* css for nav */
@@ -38,17 +38,21 @@ body #root .App > header > nav > ul li {
 }
 
 body #root .App > header > nav > ul #welcomeLink {
-  background: #9b9d9b52;
+  background: rgba(255, 255, 255, 0.911);
+  color:black;
 }
 
-body #root .App > header > nav > ul li:hover {
-  background: #9b9d9ba1;
-  transition-duration: 150ms;
+body #root .App > header > nav > ul #welcomeLink a {
+  color:black;
 }
 
 body #root .App > header > nav > ul li a {
   color: white;
   text-decoration: none;
+}
+
+body #root .App > header > nav > ul li a:hover {
+  color: gray;
 }
 
 /* css for app logo */
@@ -60,7 +64,6 @@ body #root .App > header > div {
 
   padding: 1.3rem;
   cursor: pointer;
-  background: #9b9d9ba1;
 }
 
 body #root .App > header > div > a {

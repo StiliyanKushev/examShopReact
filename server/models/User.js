@@ -4,11 +4,13 @@ const encryption = require('../utilities/encryption')
 const REQUIRED_VALIDATION_MESSAGE = '{PATH} is required'
 
 let userSchema = new mongoose.Schema({
-  email: {type: String, required: REQUIRED_VALIDATION_MESSAGE, unique: true},
-  username: {type: String, required: REQUIRED_VALIDATION_MESSAGE, unique: false},
+  email: { type: String, required: REQUIRED_VALIDATION_MESSAGE, unique: true },
+  username: { type: String, required: REQUIRED_VALIDATION_MESSAGE, unique: true },
   salt: String,
   password: String,
-  roles: [String]
+  roles: [String],
+  inventory: [{ title: String, description: String, price: Number, imageUrl: String }],
+  soldItems: [{ title: String, description: String, price: Number, imageUrl: String }]
 })
 
 userSchema.method({
@@ -32,7 +34,9 @@ module.exports.seedAdminUser = () => {
       username: 'Admin',
       salt: salt,
       password: password,
-      roles: ['Admin']
+      roles: ['Admin'],
+      inventory: [],
+      soldItems: []
     })
   })
 }

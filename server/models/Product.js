@@ -13,7 +13,6 @@ const productSchema = new Schema({
   imageUrl: {
     type: String,
     required: [true, "No imageUrl given"],
-    validate: /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/,
     unique:false
   },
   price: {
@@ -27,7 +26,7 @@ const productSchema = new Schema({
   creator:{
     type:String,
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model('Product', productSchema);

@@ -1,4 +1,11 @@
 /* css for main */
 main {
-    margin-top: 3.6rem;
-  }
+  margin-top: 3.6rem;
+  background: #100b1b;
+  background: -moz-linear-gradient(-45deg, #100b1b 0%, #131736 100%);
+  background: -webkit-linear-gradient(-45deg, #100b1b 0%, #131736 100%);
+  background: linear-gradient(135deg, #100b1b 0%, #131736 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#100b1b', endColorstr='#131736',GradientType=1 );
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+}

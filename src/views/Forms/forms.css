@@ -8,20 +8,18 @@ main > .form {
   justify-content: center;
   align-items: center;
 
-  background: #757577;
-
   padding-top: 5.9rem;
   padding-bottom: 5.9rem;
 }
 
 main > .sell {
   padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
 }
 
 main > .register{
   padding-top: 3rem;
-  padding-bottom: 3rem;
+  padding-bottom: 2.9rem;
 }
 
 main > .form > form {
