@@ -1,68 +1,111 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# The app
 
-## Available Scripts
+ExamShop is a simple shopping app that has all of the functionality that a shopping site needs.
 
-In the project directory, you can run:
+## Idea
+At the start, the user is provided only with a home view,that shows the last 2 products that are added to the shop. The shop view that has the option to buy a product, but redirects to the login page. And the login page itself, as well as a register page.
 
-### `npm start`
+A logged-in user can sell or buy products. He can also edit and delete his own products. If the user goes into his inventory, he can see all products that he is selling, sold or bought.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Admins can do all thing as normal logged-in users, however they can edit and delete everyone's products if they feel like it.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Basic file structure (only the important parts)
+```
+├── public
+|   └── index.html
+├── server					// this is all of the backend logic
+|   ├── models				// User model, and Product model
+|   ├── routes				// Basic auth and feed routes
+|   └── index.js
+├── src					    // this is most of the frontend logic
+|   ├── components			// main components ex: Header,Content,Footer + Product, CustomRoute
+|   ├── handlers			// files that hold function that handle a certain operation 
+|   ├── views				// all components that will be part of a route inside the Content component
+|   ├── App.js
+|   ├── index.js
+|   └── initialState.js		// holds all properties that the "global state" will have
+├── .gitignore
+└── package.json
+```
 
-### `npm test`
+#### Every component has a folder with a JS and CSS file so it can be easier to debug or change on the fly.  It looks like the following.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+~~~
+├── Content	
+|   ├── Content.js
+|   └── Content.css
+~~~
+## Global State
+The global state holds the user data, so it can be accessed anywhere
 
-### `npm run build`
+Using a public npm [library](https://www.npmjs.com/package/react-globally), i manage to control the global state from anywhere,
+by wrapping the component that needs to use globalState properties, in a function that is built-in to the library. 
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The global state can then be parsed as an argument to a handler function and that way i can keep my code more organized without using Redux at all!
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Security and Validation
+The app validates everything that the user is doing, and the backend logic will **NOT** let anyone who is not friendly to do harmful things. 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+In case of an error, or if someone purposely tries to "cheat" or "break" the app, the backend will respond with a meaningful error message that the client/react will receive and display with the help of [react-toastify](https://www.npmjs.com/package/react-toastify/v/1.4.3) library.
 
-### `npm run eject`
+## Routes
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The app split in 3 parts
+1. **Public** - *Anyone can access it*.
+2. **Private** - *Only users can access it.*
+3. **Administrative** - *Admins have full control over the things in it.*
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### * To help myself, i made a customRoute component that can control this part of the app.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+``` javascript
+<Switch>
+	<Route  path="/"  render={() =>  <HomeView  />}  exact  />
+	<CustomRoute
+		path="/login"
+		redirectPath="/"
+		redirect={props.redirect}
+		verification={!props.globalState.userToken}
+		component={LoginView}
+	exact  />
+	<CustomRoute
+		path="/register"
+		redirectPath="/"
+		redirect={props.redirect}
+		verification={!props.globalState.userToken}
+		component={RegisterView}
+	exact  />
+	<CustomRoute
+		path="/sell"
+		redirectPath="/login"
+		redirect={props.redirect}
+		verification={props.globalState.userToken}
+		component={SellView}
+	exact  />
+	<CustomRoute
+		path="/inventory"
+		redirectPath="/login"
+		redirect={props.redirect}
+		verification={props.globalState.userToken}
+		component={InventoryView}
+	exact  />
+	<CustomRoute
+		path="/edit/:id"
+		redirectPath="/login"
+		redirect={props.redirect}
+		verification={props.globalState.userToken}
+		component={EditView}
+	exact  />
+	<Route
+		path="/shop"
+		render={() =>  <ShopView  redirect={props.redirect}  />}
+	exact  />
+</Switch>
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+#### * The customRoute has a prop *verification* that is true or false and a *redirectPath* if the verification is false.
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+## Handlers
+1. ### Form Handler - handles the input tags on change, and on submit of a form
+2. ### Product Handler - has functions for making a fetch to the server and doing CRUD operations. 
+3. ### Toast Response Handler - handles the response body after a fetch and "toasts" the app with the provided by the backend message. It also calls a callback function if the fetch was successful.
+4. ### User Handler - Handles the main authentication functions like (login,register,logout)
