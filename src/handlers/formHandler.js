@@ -5,7 +5,6 @@ function change(e) {
     });
 }
 function submit(e, data, path, func, redirect,globalState) {
-    console.log(arguments);
     e.preventDefault();
     const url = "http://localhost:9999" + path;
     func(url, data,redirect,globalState);

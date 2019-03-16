@@ -40,7 +40,7 @@ class ShopView extends Component {
     }
 
     async componentDidMount() {
-        if (this.state.isLoading == true) {
+        if (this.state.isLoading === true) {
             let products = await shop();
             this.setState({
                 products: products,

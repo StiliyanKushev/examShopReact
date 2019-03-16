@@ -2,7 +2,7 @@ import React from "react";
 import { withGlobalState } from 'react-globally'
 import "./Product.css";
 
-import {buy,remove,edit} from "../../handlers/productHandler";
+import {buy,remove} from "../../handlers/productHandler";
 
 const Product = (props) => {
     return (
@@ -20,12 +20,12 @@ const Product = (props) => {
                                 ) : (<button onClick={() => buy(props.globalState,props.source._id,props.redirect)} id="buy">BUY</button>)
                             }
                             {
-                                props.isMine ? (
-                                    <button onClick={() => edit(props.globalState,props.source._id,props.redirect)} id="edit">EDIT</button>
+                                props.isMine || props.globalState.isAdmin ? (
+                                    <button onClick={() => props.redirect(`/edit/${props.source._id}?title=${props.source.title}&imageUrl=${props.source.imageUrl}&description=${props.source.description}&price=${props.source.price}`)} id="edit">EDIT</button>
                                 ) : (null)
                             }
                             {
-                                props.isMine ? (
+                                props.isMine || props.globalState.isAdmin ? (
                                     <button onClick={() => remove(props.globalState,props.source._id,props.redirect)} id="delete">DELETE</button>
                                 ) : (null)
                             }

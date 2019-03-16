@@ -13,6 +13,7 @@ const HomeView = lazy(() => import("../../views/Home/Home"));
 const LoginView = lazy(() => import("../../views/Forms/Login/Login"));
 const RegisterView = lazy(() => import("../../views/Forms/Register/Register"));
 const SellView = lazy(() => import("../../views/Forms/Sell/Sell"));
+const EditView = lazy(() => import("../../views/Forms/Edit/Edit"));
 const ShopView = lazy(() => import("../../views/Shop/Shop"));
 
 const AppContent = function (props) {
@@ -40,6 +41,13 @@ const AppContent = function (props) {
                     redirect={props.redirect}
                     verification={props.globalState.userToken}
                     component={SellView}
+                    exact />
+                <CustomRoute
+                    path="/edit/:id"
+                    redirectPath="/login"
+                    redirect={props.redirect}
+                    verification={props.globalState.userToken}
+                    component={EditView}
                     exact />
                 <Route
                     path="/shop"

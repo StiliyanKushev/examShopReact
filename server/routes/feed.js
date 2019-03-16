@@ -153,10 +153,45 @@ async function removeProduct(req, res, next) {
   }
 }
 
+async function editProduct(req, res, next) {
+  //the sellform validation is the same as the edit one
+  const validationResult = validateSellForm(req.body);
+  if (!validationResult.success) {
+    return res.status(200).json({
+      success: false,
+      message: validationResult.message,
+      errors: validationResult.errors
+    })
+  }
+
+  try {
+    const product = await Product.findById(req.params.id);
+    console.log(123);
+    product.title = req.body.title;
+    product.imageUrl = req.body.imageUrl;
+    product.description = req.body.description;
+    product.price = req.body.price;
+
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product edited."
+    })
+  }
+  catch (error) {
+    return res.status(200).json({
+      success: false,
+      message: "The product you are trying to edit doesn't exist",
+    })
+  }
+}
+
 router.get('/products', getProducts);
 router.get('/products/latest', getLatestProducts);
 router.post('/product/create', authCheck, createProduct);
 router.post('/product/buy/:id', authCheck, buyProduct);
 router.post('/product/remove/:id', authCheck, removeProduct);
+router.post('/product/edit/:id', authCheck, editProduct);
 
 module.exports = router;

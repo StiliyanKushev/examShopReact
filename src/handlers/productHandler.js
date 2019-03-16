@@ -1,7 +1,7 @@
 import manageDBResponse from "./toastResponseHandler";
 
 //function for handling the products (sell and store)
-function sell(url, data, redirect,globalState) {
+function sell(url, data, redirect, globalState) {
     fetch(url, {
         method: "post",
         body: JSON.stringify(data),
@@ -75,8 +75,19 @@ async function remove(globalState, id, redirect) {
         });
 }
 
-async function edit(globalState, id, redirect) {
-
+async function edit(url, data, redirect, globalState) {
+    fetch(url, {
+        method: "post",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json", token: globalState.userToken }
+    }).then(rawData => rawData.json())
+        .then(resBody => {
+            manageDBResponse(resBody,
+                // if the response is succsessful
+                () => {
+                    redirect("/shop");
+                });
+        });
 }
 
 export {
