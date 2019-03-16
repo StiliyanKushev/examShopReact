@@ -1,0 +1,68 @@
+main .inventoryInfo,
+main .moreInfo {
+  color: white;
+  font-size: 3rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+main .moreInfo {
+  font-size: 1.5rem;
+  width: 50%;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.selectableButtons {
+  margin-top: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.selectableButtons button {
+  outline: none;
+  width: 50%;
+  padding: 1.8rem;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  color: white;
+  font-weight: bolder;
+  background: transparent;
+  border-radius: 5px;
+  border-color: #491bef;
+  border-width: 5px;
+  border-style: solid;
+
+  transition: 0.3s background-color;
+}
+
+.selectableButtons button:hover {
+  background: #491bef;
+}
+
+.goBackBtn {
+  outline: none;
+  padding: .8rem;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  color: white;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  margin-bottom: 0%;
+  font-weight: bolder;
+  background: transparent;
+  border-radius: 5px;
+  border-color: #491bef;
+  border-width: 3px;
+  border-style: solid;
+  transition: 0.3s background-color;
+}
+
+.goBackBtn:hover {
+  background: #491bef;
+}

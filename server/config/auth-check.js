@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const User = require('../models/User')
 
 module.exports = (req, res, next) => {
+  console.log("asdasdasd");
   if (!req.headers.token) {
     return res.status(401).end()
   }

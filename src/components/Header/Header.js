@@ -24,31 +24,36 @@ const AppHeader = function (props) {
                                 <li>
                                     <Link to="/shop">
                                         Shop
-                            </Link>
+                                     </Link>
                                 </li>
                                 <li>
                                     <Link to="/login">
                                         Login
-                            </Link>
+                                     </Link>
                                 </li>
                                 <li>
                                     <Link to="/register">
                                         Register
-                            </Link>
+                                    </Link>
                                 </li>
                             </ul>
                         ) :
                         (
                             <ul>
                                 <li>
+                                    <Link to="/inventory">
+                                        Inventory
+                                     </Link>
+                                </li>
+                                <li>
                                     <Link to="/shop">
                                         Shop
-                            </Link>
+                                     </Link>
                                 </li>
                                 <li>
                                     <Link to="/sell">
                                         Sell
-                            </Link>
+                                    </Link>
                                 </li>
                                 <li id="welcomeLink">
                                     <Link to="#">Welcome {props.globalState.username}</Link>
@@ -59,7 +64,7 @@ const AppHeader = function (props) {
                                         // eslint-disable-next-line
                                         <a onClick={() => { logout(props.redirect) }}>
                                             Logout
-                            </a>}
+                                        </a>}
                                 </li>
                             </ul>
                         )

@@ -9,8 +9,8 @@ let userSchema = new mongoose.Schema({
   salt: String,
   password: String,
   roles: [String],
-  inventory: [{ title: String, description: String, price: Number, imageUrl: String }],
-  soldItems: [{ title: String, description: String, price: Number, imageUrl: String }]
+  inventory: [{ title: String, description: String, price: Number, imageUrl: String,creator:String }],
+  soldItems: [{ title: String, description: String, price: Number, imageUrl: String,creator:String }]
 })
 
 userSchema.method({

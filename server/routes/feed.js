@@ -116,7 +116,7 @@ async function buyProduct(req, res, next) {
     //find the seller's user model
     const seller = await User.findOne({ username: product.creator });
     //add the product to the buyer's inventory
-    const prodObj = { title: product.title, description: product.description, price: product.price, imageUrl: product.imageUrl };
+    const prodObj = { creator:product.creator, title: product.title, description: product.description, price: product.price, imageUrl: product.imageUrl };
     await User.update(
       { _id: buyer._id },
       { $push: { inventory: prodObj } });
@@ -166,7 +166,6 @@ async function editProduct(req, res, next) {
 
   try {
     const product = await Product.findById(req.params.id);
-    console.log(123);
     product.title = req.body.title;
     product.imageUrl = req.body.imageUrl;
     product.description = req.body.description;
@@ -187,11 +186,58 @@ async function editProduct(req, res, next) {
   }
 }
 
+function getSellingProducts(req, res, next) {
+  Product.find({creator: req.headers.username})
+    .then((products) => {
+      res
+        .status(200)
+        .json({ message: 'Fetched products successfully.', products });
+    })
+    .catch((error) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
+}
+function getSoldProducts(req, res, next) {
+  User.findOne({username:req.headers.username})
+    .then((user) => {
+      res
+        .status(200)
+        .json({ message: 'Fetched products successfully.', products: user.soldItems });
+    })
+    .catch((error) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
+}
+function getBoughtProducts(req, res, next) {
+  User.findOne({username:req.headers.username})
+    .then((user) => {
+      res
+        .status(200)
+        .json({ message: 'Fetched products successfully.', products: user.inventory });
+    })
+    .catch((error) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
+}
+
 router.get('/products', getProducts);
 router.get('/products/latest', getLatestProducts);
+
 router.post('/product/create', authCheck, createProduct);
 router.post('/product/buy/:id', authCheck, buyProduct);
 router.post('/product/remove/:id', authCheck, removeProduct);
 router.post('/product/edit/:id', authCheck, editProduct);
 
+router.get('/products/selling', authCheck, getSellingProducts);
+router.get('/products/sold', authCheck, getSoldProducts);
+router.get('/products/bought', authCheck, getBoughtProducts);
 module.exports = router;

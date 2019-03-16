@@ -31,7 +31,21 @@ function login(url, data, redirect) {
                 });
         });
 }
-const register = login;
+function register(url, data, redirect) {
+    fetch(url, {
+        method: "post",
+        body: JSON.stringify(data),
+        headers: { "Content-Type": "application/json" }
+    }).then(rawData => rawData.json())
+        .then(resBody => {
+            console.log(resBody);
+            manageDbResponse(resBody,
+                // if the response is succsessful
+                () => {
+                    redirect("/");
+                });
+        });
+}
 function logout(redirect) {
     removeUserSession();
     redirect("/", {

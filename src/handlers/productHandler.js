@@ -90,11 +90,53 @@ async function edit(url, data, redirect, globalState) {
         });
 }
 
+async function selling(globalState) {
+    let products = [];
+    await fetch("http://localhost:9999/feed/products/selling", {
+        method: "get",
+        headers: { "Content-Type": "application/json", token: globalState.userToken,username:globalState.username }
+    }).then(rawData => rawData.json())
+        .then(resBody => {
+            products = resBody.products;
+        });
+    console.log(products);
+    return products;
+}
+
+async function sold(globalState) {
+    let products = [];
+    await fetch("http://localhost:9999/feed/products/sold", {
+        method: "get",
+        headers: { "Content-Type": "application/json", token: globalState.userToken,username:globalState.username }
+    }).then(rawData => rawData.json())
+        .then(resBody => {
+            products = resBody.products;
+        });
+    console.log(products);
+    return products;
+}
+
+async function bought(globalState) {
+    let products = [];
+    await fetch("http://localhost:9999/feed/products/bought", {
+        method: "get",
+        headers: { "Content-Type": "application/json", token: globalState.userToken,username:globalState.username }
+    }).then(rawData => rawData.json())
+        .then(resBody => {
+            products = resBody.products;
+        });
+    console.log(products);
+    return products;
+}
+
 export {
     sell,
     shop,
     latest,
     buy,
     remove,
-    edit
+    edit,
+    selling,
+    sold,
+    bought
 }

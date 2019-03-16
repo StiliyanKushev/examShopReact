@@ -9,14 +9,11 @@ module.exports = new PassportLocalStrategy({
   session: false,
   passReqToCallback: true
 }, (req, email, password, done) => {
-  console.log(email)
   const user = {
     email: email.trim(),
     password: password.trim(),
     username: req.body.username.trim()
   }
-
-  console.log(user);
 
   User
     .find({$or:[{email: email},{username:req.body.username}]})
@@ -28,6 +25,8 @@ module.exports = new PassportLocalStrategy({
       user.salt = encryption.generateSalt()
       user.password = encryption.generateHashedPassword(user.salt, user.password)
       user.roles = []
+      user.soldItems = [];
+      user.inventory = [];
 
       User
         .create(user)
@@ -43,7 +42,6 @@ module.exports = new PassportLocalStrategy({
           if (user.roles) {
             data.roles = user.roles
           }
-    
           return done(null, token, data)
         })
         .catch((error) => {
